@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import axios, { type AxiosRequestConfig } from 'axios'
+import { onMounted, ref } from 'vue'
 
-const itens = ref([
-    {
-        id: 1,
-        contaOrigem: 25455,
-        valorTrans: 1024.02,
-        dataTransf: '27/06/2024 15:21:00'
-    },
-    {
-        id: 2,
-        contaOrigem: 25455,
-        valorTrans: 1024.02,
-        dataTransf: '28/06/2024 18:12:00'
-    }
-])
+const itens = ref()
+
+const getAllTransf = async () => {
+    const response = await axios.get(
+        'http://localhost:8080/FinTransferApi/api/transferencia/get/all'
+    )
+    return response.data
+}
+
+const startComponent = async () => {
+    itens.value = await getAllTransf()
+}
+
+onMounted(() => {
+    startComponent()
+})
+
 const loading = ref(false)
 </script>
 
@@ -34,8 +38,18 @@ const loading = ref(false)
                     <div v-if="loading">Carregando...</div>
                     <div v-else>
                         <div v-for="item in itens" :key="item.id" class="item-detail">
-                            <p style="color: black">{{ item.valorTrans }}</p>
-                            <p style="color: black">{{ item.dataTransf }}</p>
+                            <div class="contaOri">
+                                <p style="color: black; font-weight: bold">Conta Origem</p>
+                                <p style="color: black">{{ item.contaOrigem }}</p>
+                            </div>
+                            <div class="contaDest">
+                                <p style="color: black; font-weight: bold">Conta Destino</p>
+                                <p style="color: black">{{ item.contaDestino }}</p>
+                            </div>
+                            <div class="dtAgenda">
+                                <p style="color: black; font-weight: bold">Data Agendamento</p>
+                                <p style="color: black">{{ item.dtAgendamento }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,5 +102,7 @@ const loading = ref(false)
     padding: 10px;
     justify-content: space-evenly;
     border-radius: 5px;
+    font-size: 10px;
+    text-align: center;
 }
 </style>
