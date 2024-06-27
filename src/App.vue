@@ -13,6 +13,11 @@ const getAllTransf = async () => {
 
 const startComponent = async () => {
     itens.value = await getAllTransf()
+    console.log(itens.value)
+}
+
+const alterStatusScreen = () => {
+    showItem.value = !showItem.value
 }
 
 onMounted(() => {
@@ -20,36 +25,39 @@ onMounted(() => {
 })
 
 const loading = ref(false)
+const showItem = ref(false)
 </script>
 
 <template>
     <main>
         <div class="container">
             <div class="main-item">
-                <div class="main-title">
+                <div v-if="!showItem" class="main-title">
                     <h1>Bem vindo ao agendamento de transferência</h1>
+                </div>
+                <div v-else>
+                    <div style="width: 20px; height: 20px; background-color: blueviolet"></div>
                 </div>
             </div>
             <div class="side-item">
                 <div class="side-button">
-                    <button class="button-plus">Adicionar Transferência</button>
+                    <button @click="alterStatusScreen()" class="button-plus">
+                        Adicionar Transferência
+                    </button>
                 </div>
                 <div class="itens">
-                    <div v-if="loading">Carregando...</div>
-                    <div v-else>
-                        <div v-for="item in itens" :key="item.id" class="item-detail">
-                            <div class="contaOri">
-                                <p style="color: black; font-weight: bold">Conta Origem</p>
-                                <p style="color: black">{{ item.contaOrigem }}</p>
-                            </div>
-                            <div class="contaDest">
-                                <p style="color: black; font-weight: bold">Conta Destino</p>
-                                <p style="color: black">{{ item.contaDestino }}</p>
-                            </div>
-                            <div class="dtAgenda">
-                                <p style="color: black; font-weight: bold">Data Agendamento</p>
-                                <p style="color: black">{{ item.dtAgendamento }}</p>
-                            </div>
+                    <div v-for="item in itens" :key="item.id" class="item-detail">
+                        <div class="contaOri">
+                            <p style="color: black; font-weight: bold">Conta Origem</p>
+                            <p style="color: black">{{ item.contaOrigem }}</p>
+                        </div>
+                        <div class="contaDest">
+                            <p style="color: black; font-weight: bold">Conta Destino</p>
+                            <p style="color: black">{{ item.contaDestino }}</p>
+                        </div>
+                        <div class="dtAgenda">
+                            <p style="color: black; font-weight: bold">Data Agendamento</p>
+                            <p style="color: black">{{ item.dtAgendamento }}</p>
                         </div>
                     </div>
                 </div>
@@ -104,5 +112,10 @@ const loading = ref(false)
     border-radius: 5px;
     font-size: 10px;
     text-align: center;
+}
+.itens {
+    overflow-y: auto;
+    max-height: 90%;
+    margin-top: 10px;
 }
 </style>
